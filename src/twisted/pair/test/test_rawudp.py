@@ -10,14 +10,13 @@ from twisted.trial import unittest
 
 
 class MyProtocol(protocol.DatagramProtocol):
-    def __init__(self, expecting: list[tuple[bytes, bytes, int]]) -> None:
+    def __init__(self, expecting: list[tuple[bytes, str, int]]) -> None:
         self.expecting = list(expecting)
 
     def datagramReceived(
         self,
         data: bytes,
-        # https://github.com/twisted/twisted/issues/12699
-        peer: tuple[bytes, int],  # type:ignore[override]
+        peer: tuple[str, int],
     ) -> None:
         (host, port) = peer
         assert self.expecting, "Got a packet when not expecting anymore."
@@ -42,7 +41,7 @@ class RawUDPTests(unittest.TestCase):
         proto = rawudp.RawUDPProtocol()
         p1 = MyProtocol(
             [
-                (b"foobar", b"testHost", 0x43A2),
+                (b"foobar", "testHost", 0x43A2),
             ]
         )
         proto.addProto(0xF00F, p1)
@@ -54,8 +53,8 @@ class RawUDPTests(unittest.TestCase):
             b"\xde\xad"  # check
             b"foobar",
             partial=0,
-            dest=b"dummy",
-            source=b"testHost",
+            dest="dummy",
+            source="testHost",
             protocol=b"dummy",
             version=b"dummy",
             ihl=b"dummy",
@@ -76,8 +75,8 @@ class RawUDPTests(unittest.TestCase):
         proto = rawudp.RawUDPProtocol()
         p1 = MyProtocol(
             [
-                (b"foobar", b"testHost", 0x43A2),
-                (b"quux", b"otherHost", 0x33FE),
+                (b"foobar", "testHost", 0x43A2),
+                (b"quux", "otherHost", 0x33FE),
             ]
         )
         proto.addProto(0xF00F, p1)
@@ -88,8 +87,8 @@ class RawUDPTests(unittest.TestCase):
             b"\xde\xad"  # check
             b"foobar",
             partial=0,
-            dest=b"dummy",
-            source=b"testHost",
+            dest="dummy",
+            source="testHost",
             protocol=b"dummy",
             version=b"dummy",
             ihl=b"dummy",
@@ -108,8 +107,8 @@ class RawUDPTests(unittest.TestCase):
             b"\xde\xad"  # check
             b"quux",
             partial=0,
-            dest=b"dummy",
-            source=b"otherHost",
+            dest="dummy",
+            source="otherHost",
             protocol=b"dummy",
             version=b"dummy",
             ihl=b"dummy",
@@ -130,13 +129,13 @@ class RawUDPTests(unittest.TestCase):
         proto = rawudp.RawUDPProtocol()
         p1 = MyProtocol(
             [
-                (b"foobar", b"testHost", 0x43A2),
+                (b"foobar", "testHost", 0x43A2),
             ]
         )
 
         p2 = MyProtocol(
             [
-                (b"foobar", b"testHost", 0x43A2),
+                (b"foobar", "testHost", 0x43A2),
             ]
         )
 
@@ -150,8 +149,8 @@ class RawUDPTests(unittest.TestCase):
             b"\xde\xad"  # check
             b"foobar",
             partial=0,
-            dest=b"dummy",
-            source=b"testHost",
+            dest="dummy",
+            source="testHost",
             protocol=b"dummy",
             version=b"dummy",
             ihl=b"dummy",
@@ -183,8 +182,8 @@ class RawUDPTests(unittest.TestCase):
             b"\xde\xad"  # check
             b"foobar",
             partial=0,
-            dest=b"dummy",
-            source=b"testHost",
+            dest="dummy",
+            source="testHost",
             protocol=b"dummy",
             version=b"dummy",
             ihl=b"dummy",
@@ -201,16 +200,16 @@ class RawUDPTests(unittest.TestCase):
         proto = rawudp.RawUDPProtocol()
         p1 = MyProtocol(
             [
-                (b"foobar", b"testHost", 0x43A2),
-                (b"quux", b"otherHost", 0x33FE),
+                (b"foobar", "testHost", 0x43A2),
+                (b"quux", "otherHost", 0x33FE),
             ]
         )
         proto.addProto(0xF00F, p1)
 
         p2 = MyProtocol(
             [
-                (b"quux", b"otherHost", 0xA401),
-                (b"foobar", b"testHost", 0xA302),
+                (b"quux", "otherHost", 0xA401),
+                (b"foobar", "testHost", 0xA302),
             ]
         )
         proto.addProto(0xB050, p2)
@@ -222,8 +221,8 @@ class RawUDPTests(unittest.TestCase):
             b"\xde\xad"  # check
             b"quux",
             partial=0,
-            dest=b"dummy",
-            source=b"otherHost",
+            dest="dummy",
+            source="otherHost",
             protocol=b"dummy",
             version=b"dummy",
             ihl=b"dummy",
@@ -242,8 +241,8 @@ class RawUDPTests(unittest.TestCase):
             b"\xde\xad"  # check
             b"foobar",
             partial=0,
-            dest=b"dummy",
-            source=b"testHost",
+            dest="dummy",
+            source="testHost",
             protocol=b"dummy",
             version=b"dummy",
             ihl=b"dummy",
@@ -262,8 +261,8 @@ class RawUDPTests(unittest.TestCase):
             b"\xde\xad"  # check
             b"quux",
             partial=0,
-            dest=b"dummy",
-            source=b"otherHost",
+            dest="dummy",
+            source="otherHost",
             protocol=b"dummy",
             version=b"dummy",
             ihl=b"dummy",
@@ -282,8 +281,8 @@ class RawUDPTests(unittest.TestCase):
             b"\xde\xad"  # check
             b"foobar",
             partial=0,
-            dest=b"dummy",
-            source=b"testHost",
+            dest="dummy",
+            source="testHost",
             protocol=b"dummy",
             version=b"dummy",
             ihl=b"dummy",
